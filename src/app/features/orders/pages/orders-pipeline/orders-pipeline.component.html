@@ -1,0 +1,64 @@
+<div class="page">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Order Pipeline</div>
+          <div class="page-subtitle">Track every order and move it through fulfillment.</div>
+        </div>
+        <button class="glass-btn-secondary btn-sm" (click)="load()"><i class="pi pi-refresh"></i> Refresh</button>
+      </div>
+
+      <div *ngIf="message()" class="alert alert-success">{{ message() }}</div>
+      <div *ngIf="error()" class="alert alert-error">{{ error() }}</div>
+
+      <!-- Quick counts per status -->
+      <div class="stat-row">
+        <div class="stat-tile" *ngFor="let s of statuses">
+          <div class="stat-value">{{ countByStatus(s) }}</div>
+          <div class="stat-label">{{ s }}</div>
+        </div>
+      </div>
+
+      <!-- Status filter -->
+      <div class="panel">
+        <div class="btn-row">
+          <button class="glass-btn-secondary btn-sm" [class.glass-btn-primary]="filter() === 'All'"
+                  (click)="setFilter('All')">All</button>
+          <button class="glass-btn-secondary btn-sm" *ngFor="let s of statuses"
+                  [class.glass-btn-primary]="filter() === s" (click)="setFilter(s)">{{ s }}</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div *ngIf="loading()" class="empty">Loading orders...</div>
+        <div *ngIf="!loading() && filtered().length === 0" class="empty">No orders in this view.</div>
+
+        <div class="table-wrap" *ngIf="filtered().length > 0">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Order</th><th>Customer</th><th>Channel</th><th>Items</th>
+                <th>Total</th><th>Status</th><th>Update Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let o of filtered()">
+                <td>#{{ o.orderId }}</td>
+                <td>{{ o.customerName || ('Customer #' + o.customerId) }}</td>
+                <td>{{ o.channel }}</td>
+                <td>{{ o.items?.length || 0 }}</td>
+                <td>₹{{ o.totalAmount }}</td>
+                <td><span class="badge" [class]="badgeClass(o.status)">{{ o.status }}</span></td>
+                <td>
+                  <div class="btn-row">
+                    <select class="glass-select" style="width:auto" [(ngModel)]="pending[o.orderId!]">
+                      <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+                    </select>
+                    <button class="glass-btn-primary btn-sm" (click)="apply(o)">Apply</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>

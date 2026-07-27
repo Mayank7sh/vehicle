@@ -1,0 +1,80 @@
+<div class="page">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Supplier Orders</div>
+          <div class="page-subtitle">Raise replenishment orders and receive stock from suppliers.</div>
+        </div>
+        <button class="glass-btn-secondary btn-sm" (click)="load()"><i class="pi pi-refresh"></i> Refresh</button>
+      </div>
+
+      <div *ngIf="message()" class="alert alert-success">{{ message() }}</div>
+      <div *ngIf="error()" class="alert alert-error">{{ error() }}</div>
+
+      <div class="panel">
+        <h2 class="glass-section-title">Raise Supplier Order</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label>Supplier ID</label>
+            <input type="number" class="glass-input" [(ngModel)]="form.supplierId" />
+          </div>
+          <div class="field">
+            <label>Product Variant ID</label>
+            <input type="number" class="glass-input" [(ngModel)]="form.productVariantId" />
+          </div>
+          <div class="field">
+            <label>Quantity Ordered</label>
+            <input type="number" class="glass-input" [(ngModel)]="form.quantityOrdered" />
+          </div>
+          <div class="field">
+            <label>Order Date</label>
+            <input type="date" class="glass-input" [(ngModel)]="form.orderDate" />
+          </div>
+          <div class="field">
+            <label>Expected Delivery</label>
+            <input type="date" class="glass-input" [(ngModel)]="form.expectedDelivery" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="glass-btn-primary" (click)="create()"><i class="pi pi-plus"></i> Create</button>
+          <button class="glass-btn-secondary" (click)="resetForm()">Reset</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div *ngIf="loading()" class="empty">Loading supplier orders...</div>
+        <div *ngIf="!loading() && orders().length === 0" class="empty">No supplier orders yet.</div>
+
+        <div class="table-wrap" *ngIf="orders().length > 0">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th><th>Supplier</th><th>Variant</th><th>Qty</th>
+                <th>Ordered</th><th>Expected</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let o of orders()">
+                <td>#{{ o.supplierOrderId }}</td>
+                <td>{{ o.supplierId }}</td>
+                <td>{{ o.productVariantId }}</td>
+                <td>{{ o.quantityOrdered }}</td>
+                <td>{{ o.orderDate }}</td>
+                <td>{{ o.expectedDelivery || '-' }}</td>
+                <td><span class="badge" [class]="badgeClass(o.status)">{{ o.status }}</span></td>
+                <td>
+                  <div class="btn-row">
+                    <button class="glass-btn-primary btn-sm" *ngIf="o.status === Status.Pending" (click)="receive(o)">
+                      <i class="pi pi-check"></i> Receive
+                    </button>
+                    <button class="glass-btn-secondary btn-sm" *ngIf="o.status === Status.Pending" (click)="cancel(o)">
+                      Cancel
+                    </button>
+                    <button class="glass-btn-danger btn-sm" (click)="remove(o)"><i class="pi pi-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>

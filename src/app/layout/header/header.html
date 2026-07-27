@@ -1,0 +1,25 @@
+<header class="header glass">
+  <div class="header-left">
+    <!-- Mobile hamburger (visible only on mobile) -->
+    @if (isMobile()) {
+      <button class="header-toggle" (click)="toggleSidebar.emit()" aria-label="Toggle sidebar">
+        <i class="pi pi-bars"></i>
+      </button>
+    }
+    <h1 class="header-title">RetailFlow</h1>
+  </div>
+
+  <div class="header-right">
+    @if (authService.isAuthenticated()) {
+      <span class="header-greeting">Welcome, {{ authService.currentUser()?.name }}</span>
+      <button class="header-logout" (click)="authService.logout()" title="Logout">
+        <i class="pi pi-sign-out"></i>
+      </button>
+    } @else {
+      <a routerLink="/login" class="header-login-btn">
+        <i class="pi pi-sign-in"></i>
+        Sign In
+      </a>
+    }
+  </div>
+</header>

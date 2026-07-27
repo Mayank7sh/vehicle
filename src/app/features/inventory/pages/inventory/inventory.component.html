@@ -1,0 +1,88 @@
+<div class="page">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Inventory</div>
+          <div class="page-subtitle">Stock on hand across locations, with low-stock alerts.</div>
+        </div>
+        <div class="btn-row">
+          <button class="glass-btn-secondary btn-sm" [class.glass-btn-primary]="!showLowOnly()" (click)="showAll()">All Stock</button>
+          <button class="glass-btn-secondary btn-sm" [class.glass-btn-primary]="showLowOnly()" (click)="showLow()">Low Stock</button>
+        </div>
+      </div>
+
+      <div *ngIf="message()" class="alert alert-success">{{ message() }}</div>
+      <div *ngIf="error()" class="alert alert-error">{{ error() }}</div>
+
+      <div class="stat-row">
+        <div class="stat-tile">
+          <div class="stat-value">{{ items().length }}</div>
+          <div class="stat-label">Records shown</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-value">{{ totalOnHand() }}</div>
+          <div class="stat-label">Total units on hand</div>
+        </div>
+      </div>
+
+      <!-- Add stock record -->
+      <div class="panel">
+        <h2 class="glass-section-title">Add Stock Record</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label>Product Variant ID</label>
+            <input type="number" class="glass-input" [(ngModel)]="form.productVariantId" />
+          </div>
+          <div class="field">
+            <label>Location ID</label>
+            <input type="number" class="glass-input" [(ngModel)]="form.locationId" />
+          </div>
+          <div class="field">
+            <label>Quantity On Hand</label>
+            <input type="number" class="glass-input" [(ngModel)]="form.quantityOnHand" />
+          </div>
+          <div class="field">
+            <label>Quantity Reserved</label>
+            <input type="number" class="glass-input" [(ngModel)]="form.quantityReserved" />
+          </div>
+          <div class="field">
+            <label>Reorder Level</label>
+            <input type="number" class="glass-input" [(ngModel)]="form.reorderLevel" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="glass-btn-primary" (click)="create()"><i class="pi pi-plus"></i> Add Record</button>
+          <button class="glass-btn-secondary" (click)="resetForm()">Reset</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div *ngIf="loading()" class="empty">Loading inventory...</div>
+        <div *ngIf="!loading() && items().length === 0" class="empty">No inventory records.</div>
+
+        <div class="table-wrap" *ngIf="items().length > 0">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th><th>Variant</th><th>Location</th><th>On Hand</th>
+                <th>Reserved</th><th>Reorder Level</th><th>Updated</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let i of items()">
+                <td>#{{ i.inventoryId }}</td>
+                <td>{{ i.productVariantId }}</td>
+                <td>{{ i.locationId }}</td>
+                <td>
+                  {{ i.quantityOnHand }}
+                  <span class="badge badge-red" *ngIf="isLow(i)">Low</span>
+                </td>
+                <td>{{ i.quantityReserved }}</td>
+                <td>{{ i.reorderLevel }}</td>
+                <td>{{ i.lastUpdated | date:'short' }}</td>
+                <td><button class="glass-btn-danger btn-sm" (click)="remove(i)"><i class="pi pi-trash"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>

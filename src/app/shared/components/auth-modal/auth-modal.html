@@ -1,0 +1,20 @@
+<div class="auth-modal-overlay" (click)="onClose()">
+  <div class="auth-modal" (click)="$event.stopPropagation()">
+    <button class="auth-modal-close" (click)="onClose()">&times;</button>
+    <div class="auth-modal-icon">
+      <i class="pi pi-lock"></i>
+    </div>
+    <h2>Sign in to RetailFlow</h2>
+    <p>Create an account or sign in to add items to your cart, save favorites, and track your orders.</p>
+    <div class="auth-modal-buttons">
+      <button class="auth-modal-btn primary" (click)="onLogin()">
+        <i class="pi pi-sign-in"></i>
+        Sign In
+      </button>
+      <button class="auth-modal-btn secondary" (click)="onRegister()">
+        <i class="pi pi-user-plus"></i>
+        Create Account
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<div class="page">
+      <div class="page-head">
+        <div>
+          <div class="page-title">My Orders</div>
+          <div class="page-subtitle">View your orders and track their shipments.</div>
+        </div>
+        <button class="glass-btn-secondary btn-sm" (click)="load()"><i class="pi pi-refresh"></i> Refresh</button>
+      </div>
+
+      <div *ngIf="message()" class="alert alert-success">{{ message() }}</div>
+      <div *ngIf="error()" class="alert alert-error">{{ error() }}</div>
+
+      <!-- Track a shipment by tracking number -->
+      <div class="panel">
+        <h2 class="glass-section-title">Track a Shipment</h2>
+        <div class="form-actions" style="margin-top:0">
+          <input class="glass-input" style="max-width:280px" placeholder="Tracking number"
+                 [(ngModel)]="trackingNumber" />
+          <button class="glass-btn-primary btn-sm" (click)="track()"><i class="pi pi-search"></i> Track</button>
+        </div>
+        <div *ngIf="tracked()" class="alert alert-info" style="margin-top:1rem">
+          Order #{{ tracked()?.orderId }} · {{ tracked()?.carrier }} ·
+          <strong>{{ tracked()?.status }}</strong> ·
+          ETA {{ tracked()?.estimatedDelivery || 'n/a' }}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div *ngIf="loading()" class="empty">Loading your orders...</div>
+        <div *ngIf="!loading() && orders().length === 0" class="empty">You have not placed any orders yet.</div>
+
+        <div class="table-wrap" *ngIf="orders().length > 0">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Order</th><th>Date</th><th>Channel</th><th>Items</th>
+                <th>Total</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let o of orders()">
+                <td>#{{ o.orderId }}</td>
+                <td>{{ o.orderDate | date:'medium' }}</td>
+                <td>{{ o.channel }}</td>
+                <td>{{ o.items?.length || 0 }}</td>
+                <td>₹{{ o.totalAmount }}</td>
+                <td><span class="badge" [class]="badgeClass(o.status)">{{ o.status }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>

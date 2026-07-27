@@ -1,0 +1,36 @@
+<div class="layout-wrapper">
+  <!-- Mobile Hamburger Toggle -->
+  <button class="mobile-toggle" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+    <i class="pi pi-bars"></i>
+  </button>
+
+  <!-- Sidebar -->
+  <app-sidebar
+    [collapsed]="sidebarCollapsed()"
+    [isMobile]="isMobile()"
+    (sidebarToggle)="toggleSidebar()"
+    (openAuthModal)="openAuthModal()"
+  ></app-sidebar>
+
+  <!-- Main Content Area -->
+  <div class="main-area" [ngClass]="{'sidebar-open': !sidebarCollapsed() && !isMobile()}">
+    <app-header
+      [sidebarCollapsed]="sidebarCollapsed()"
+      [isMobile]="isMobile()"
+      (toggleSidebar)="toggleSidebar()"
+    ></app-header>
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+    <app-footer></app-footer>
+  </div>
+
+  <!-- Auth Modal -->
+  @if (showAuthModal()) {
+    <app-auth-modal
+      (close)="closeAuthModal()"
+      (login)="onAuthModalLogin()"
+      (register)="onAuthModalRegister()"
+    ></app-auth-modal>
+  }
+</div>

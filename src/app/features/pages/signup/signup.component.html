@@ -1,0 +1,49 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>Create Account</h2>
+    <p class="subtitle">Get started with your new account</p>
+
+    <div *ngIf="errorMessage()" class="alert alert-danger">
+      {{ errorMessage() }}
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #signupForm="ngForm">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input id="name" type="text" [(ngModel)]="user.name" name="name" required class="form-control" placeholder="John Doe" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input id="email" type="email" [(ngModel)]="user.email" name="email" required class="form-control" placeholder="name@company.com" />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input id="phone" type="text" [(ngModel)]="user.phone" name="phone" class="form-control" placeholder="+1234567890" />
+      </div>
+
+      <div class="form-group">
+        <label for="role">Role</label>
+        <select id="role" [(ngModel)]="user.role" name="role" class="form-control">
+          <option *ngFor="let roleOption of roles" [value]="roleOption">
+            {{ roleOption }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" [(ngModel)]="user.password" name="password" required class="form-control" placeholder="••••••••" />
+      </div>
+
+      <button type="submit" [disabled]="!signupForm.form.valid || isLoading()" class="btn-primary">
+        {{ isLoading() ? 'Creating account...' : 'Sign Up' }}
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      Already have an account? <a routerLink="/login">Log in</a>
+    </p>
+  </div>
+</div>

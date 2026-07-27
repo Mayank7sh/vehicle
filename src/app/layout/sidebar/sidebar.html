@@ -1,0 +1,80 @@
+<aside class="sidebar" [ngClass]="{'collapsed': collapsed(), 'mobile': isMobile()}">
+  <!-- Mobile Hamburger Toggle -->
+  <button class="sidebar-toggle" (click)="onToggle()" aria-label="Toggle sidebar">
+    <i class="pi pi-bars"></i>
+  </button>
+
+  <!-- Overlay for mobile -->
+  @if (isMobile() && !collapsed()) {
+    <div class="sidebar-overlay" (click)="onToggle()"></div>
+  }
+
+  <!-- Sidebar Inner -->
+  <div class="sidebar-inner" [ngClass]="{'collapsed': collapsed()}">
+    <!-- Logo Section -->
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <i class="pi pi-shopping-cart"></i>
+      </div>
+      <span class="logo-text">RetailFlow</span>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="sidebar-search">
+      <i class="pi pi-search search-icon"></i>
+      <input
+        type="text"
+        placeholder="Search products..."
+        (input)="searchQuery.set($any($event.target).value)"
+        class="search-input"
+      />
+    </div>
+
+    <!-- Navigation Section -->
+    <nav class="sidebar-nav">
+      <p class="nav-section-label">{{ isGuest() ? 'Browse' : 'Navigation' }}</p>
+      @for (item of navItems(); track trackByRoute($index, item)) {
+        <a
+          [routerLink]="item.route"
+          class="nav-item"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
+        >
+          <i [class]="item.icon"></i>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <!-- Spacer -->
+    <div class="sidebar-spacer"></div>
+
+    <!-- User / Auth Section (Bottom) -->
+    <div class="sidebar-user-section">
+      @if (isGuest()) {
+        <!-- Guest State -->
+        <button class="auth-btn" (click)="onAuthClick()">
+          <i class="pi pi-sign-in"></i>
+          <span>Login / Register</span>
+        </button>
+      } @else {
+        <!-- Authenticated State -->
+        <div class="user-profile">
+          <div class="user-avatar">{{ userDisplay()?.initials }}</div>
+          <div class="user-info">
+            <span class="user-name">{{ userDisplay()?.name }}</span>
+            <span class="user-role-badge">{{ userDisplay()?.role }}</span>
+          </div>
+          <div class="user-actions">
+            <button class="icon-btn" routerLink="/profile" title="My Profile">
+              <i class="pi pi-user"></i>
+            </button>
+            <button class="icon-btn logout-btn" (click)="onLogout()" title="Logout">
+              <i class="pi pi-sign-out"></i>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</aside>

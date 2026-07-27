@@ -1,0 +1,96 @@
+<div class="page">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Shop</div>
+          <div class="page-subtitle">Browse products, pick a variant and place your order.</div>
+        </div>
+      </div>
+
+      <div *ngIf="message()" class="alert alert-success">{{ message() }}</div>
+      <div *ngIf="error()" class="alert alert-error">{{ error() }}</div>
+
+      <div class="panel">
+        <label class="field" style="max-width:340px;">
+          <span style="font-size:.8rem;font-weight:600;color:var(--text-muted)">Channel</span>
+          <select class="glass-select" [(ngModel)]="channel">
+            <option *ngFor="let c of channels" [value]="c">{{ c }}</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Product catalog -->
+      <div class="panel">
+        <h2 class="glass-section-title">Products</h2>
+        <div *ngIf="loading()" class="empty">Loading products...</div>
+        <div *ngIf="!loading() && products().length === 0" class="empty">No products available.</div>
+
+        <div class="card-grid">
+          <div class="product-card" *ngFor="let p of products()">
+            <h3>{{ p.name }}</h3>
+            <span class="brand">{{ p.brand || 'Generic' }}</span>
+            <p style="font-size:.8rem;color:var(--text-light);min-height:2.2em;">{{ p.description }}</p>
+            <span class="price">From ₹{{ p.basePrice || 0 }}</span>
+            <button class="glass-btn-secondary btn-sm" (click)="viewVariants(p)">
+              <i class="pi pi-eye"></i> View Variants
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variants of the selected product -->
+      <div class="panel" *ngIf="selectedProduct()">
+        <h2 class="glass-section-title">Variants of {{ selectedProduct()?.name }}</h2>
+        <div *ngIf="variants().length === 0" class="empty">No variants for this product.</div>
+        <div class="table-wrap" *ngIf="variants().length > 0">
+          <table class="data-table">
+            <thead>
+              <tr><th>Variant</th><th>Attribute</th><th>Price</th><th>In Stock</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let v of variants()">
+                <td>#{{ v.variantId }}</td>
+                <td>{{ v.attribute }}: {{ v.attributeValue }}</td>
+                <td>₹{{ v.price }}</td>
+                <td>{{ v.stockQuantity ?? '-' }}</td>
+                <td>
+                  <button class="glass-btn-primary btn-sm" (click)="addToCart(v)">
+                    <i class="pi pi-cart-plus"></i> Add
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Cart -->
+      <div class="panel">
+        <h2 class="glass-section-title">Your Cart</h2>
+        <div *ngIf="cart().length === 0" class="empty">Your cart is empty.</div>
+
+        <div *ngIf="cart().length > 0">
+          <div class="cart-line" *ngFor="let line of cart(); let i = index">
+            <span>{{ line.productName }} — variant #{{ line.variant.variantId }}</span>
+            <span>
+              <input type="number" min="1" class="glass-input" style="width:70px;display:inline-block"
+                     [(ngModel)]="line.quantity" />
+              × ₹{{ line.variant.price }}
+            </span>
+            <span>₹{{ line.variant.price * line.quantity }}</span>
+            <button class="glass-btn-danger btn-sm" (click)="removeLine(i)"><i class="pi pi-trash"></i></button>
+          </div>
+
+          <div class="cart-total">
+            <span>Total</span>
+            <span>₹{{ cartTotal() }}</span>
+          </div>
+
+          <div class="form-actions">
+            <button class="glass-btn-primary" [disabled]="placing()" (click)="placeOrder()">
+              <i class="pi pi-check"></i> {{ placing() ? 'Placing...' : 'Place Order' }}
+            </button>
+            <button class="glass-btn-secondary" (click)="clearCart()">Clear Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>

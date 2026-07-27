@@ -1,0 +1,88 @@
+<div class="page">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Shipments</div>
+          <div class="page-subtitle">Create shipments for packed orders and update delivery status.</div>
+        </div>
+        <button class="glass-btn-secondary btn-sm" (click)="load()"><i class="pi pi-refresh"></i> Refresh</button>
+      </div>
+
+      <div *ngIf="message()" class="alert alert-success">{{ message() }}</div>
+      <div *ngIf="error()" class="alert alert-error">{{ error() }}</div>
+
+      <!-- New shipment form -->
+      <div class="panel">
+        <h2 class="glass-section-title">Create Shipment</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label>Order ID</label>
+            <input type="number" class="glass-input" [(ngModel)]="form.orderId" />
+          </div>
+          <div class="field">
+            <label>Tracking Number</label>
+            <input class="glass-input" [(ngModel)]="form.trackingNumber" />
+          </div>
+          <div class="field">
+            <label>Carrier</label>
+            <input class="glass-input" [(ngModel)]="form.carrier" />
+          </div>
+          <div class="field">
+            <label>Shipped Date</label>
+            <input type="date" class="glass-input" [(ngModel)]="form.shippedDate" />
+          </div>
+          <div class="field">
+            <label>Estimated Delivery</label>
+            <input type="date" class="glass-input" [(ngModel)]="form.estimatedDelivery" />
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <select class="glass-select" [(ngModel)]="form.status">
+              <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="glass-btn-primary" (click)="create()"><i class="pi pi-plus"></i> Create Shipment</button>
+          <button class="glass-btn-secondary" (click)="resetForm()">Reset</button>
+        </div>
+        <p class="page-subtitle" style="margin-top:.5rem">
+          Note: the order must be <strong>Confirmed</strong> or <strong>Packed</strong> before a shipment can be created.
+        </p>
+      </div>
+
+      <div class="panel">
+        <div *ngIf="loading()" class="empty">Loading shipments...</div>
+        <div *ngIf="!loading() && shipments().length === 0" class="empty">No shipments yet.</div>
+
+        <div class="table-wrap" *ngIf="shipments().length > 0">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Shipment</th><th>Order</th><th>Tracking</th><th>Carrier</th>
+                <th>Shipped</th><th>ETA</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of shipments()">
+                <td>#{{ s.shipmentId }}</td>
+                <td>#{{ s.orderId }}</td>
+                <td>{{ s.trackingNumber }}</td>
+                <td>{{ s.carrier }}</td>
+                <td>{{ s.shippedDate || '-' }}</td>
+                <td>{{ s.estimatedDelivery || '-' }}</td>
+                <td><span class="badge" [class]="badgeClass(s.status)">{{ s.status }}</span></td>
+                <td>
+                  <div class="btn-row">
+                    <select class="glass-select" style="width:auto" [(ngModel)]="pending[s.shipmentId!]">
+                      <option *ngFor="let st of statuses" [value]="st">{{ st }}</option>
+                    </select>
+                    <button class="glass-btn-primary btn-sm" (click)="updateStatus(s)">Set</button>
+                    <button class="glass-btn-danger btn-sm" (click)="remove(s)"><i class="pi pi-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
