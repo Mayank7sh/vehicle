@@ -1,0 +1,22 @@
+<h1>Automobile Shop</h1>
+
+<table border="1">
+
+    <tr>
+        <th>Id</th>
+        <th>Manufacture</th>
+        <th>Model</th>
+        <th>Price</th>
+        <th>Image</th>
+    </tr>
+
+    @for (vehicle of Vehicles(); track vehicle.id) {
+        <tr>
+            <td>{{vehicle.id}}</td>
+            <td>{{vehicle.MF}}</td>
+            <td>{{vehicle.Model}}</td>
+            <td>{{vehicle.Price}}</td>
+            <td><img [src]="vehicle.Imageurl" width="80" height="50"></td>
+        </tr>
+    }
+</table>
